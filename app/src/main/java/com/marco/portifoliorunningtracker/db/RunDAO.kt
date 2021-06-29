@@ -1,0 +1,40 @@
+package com.marco.portifoliorunningtracker.db
+
+import androidx.lifecycle.LiveData
+import androidx.room.*
+
+
+@Dao
+interface RunDAO {
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRun(run: Run)
+    @Delete
+    suspend fun deleteRun(Run: Run)
+
+    //DESC = DECRESCENTE
+    @Query("SELECT * FROM running_table ORDER BY timestamp DESC")
+    fun getAllRunsSortedByDate(): LiveData<List<Run>>
+    @Query("SELECT * FROM running_table ORDER BY timeInMillis DESC")
+    fun getAllRunsSortedByTimeInMillis(): LiveData<List<Run>>
+    @Query("SELECT * FROM running_table ORDER BY caloriesBurned DESC")
+    fun getAllRunsSortedByCaloriesBurned(): LiveData<List<Run>>
+    @Query("SELECT * FROM running_table ORDER BY avgSpeedInKM DESC")
+    fun getAllRunsSortedByAvgSpeed(): LiveData<List<Run>>
+    @Query("SELECT * FROM running_table ORDER BY distanceInMeters DESC")
+    fun getAllRunsSortedByDistance(): LiveData<List<Run>>
+
+    //funcao propria do sql SUM = SOMA , AVG = MEDIA
+    @Query("SELECT SUM(timeInMillis) FROM running_table")
+    fun getTotalTimeInMillis(): LiveData<Long>
+
+    @Query("SELECT SUM(caloriesBurned) FROM running_table")
+    fun getTotalCaloriesBurned(): LiveData<Int>
+
+    @Query("SELECT SUM(distanceInMeters) FROM running_table")
+    fun getTotalDistance(): LiveData<Int>
+
+    @Query("SELECT AVG(avgSpeedInKM) FROM running_table")
+    fun getTotalAvgSpeed(): LiveData<Float>
+
+}
